@@ -33,9 +33,7 @@
             }]
         },
         options: {
-            animation: {
-                duration: 0
-            },
+            animation: false,
             scales: {
                 y: {
                     beginAtZero: true
@@ -51,6 +49,9 @@
     function updateNumbersArray(slideValue) {
         currentArrayLength = parseInt(slideValue);
         numbersArray = generateRandomArray(currentArrayLength);
+        chart.data.datasets[0].data = numbersArray;
+        // chart.data.datasets[0].backgroundColor = Array.from({length: currentArrayLength}, () => defaultColor)
+        chart.data.labels = numbersArray;
         chart.update();
     }
 
@@ -81,7 +82,7 @@
     }
 
     function clickHandler(){
-        numbersArray = mysort(numbersArray, chart.data.datasets[0].data.backgroundColor)
+        numbersArray = mysort(numbersArray, chart.data.datasets[0].backgroundColor)
         chart.update();
     }
 
