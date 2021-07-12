@@ -9,24 +9,27 @@
 </head>
 <body>
 <div class="slidecontainer">
-    <input type="range" min="10" max="1000" value="950" class="slider" id="myRange" onchange="updateSlider(this.value)">
+    <input type="range" min="10" max="1000" value="50" id="sleepTimeRange" onchange="updateTime(this.value)">
+</div>
+<div class="slidecontainer">
+    <input type="range" min="2" max="50" value="20" id="numberElementsRange" onchange="updateNumbersArray(this.value)">
 </div>
 <button onclick="clickHandler()">Click</button>
-<canvas id="chart"></canvas>
+<canvas id="main_chart"></canvas>
 <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var random_array = Array.from({length: 10}, () => Math.floor(Math.random() * 40));
-    var colors = Array.from({length: 10}, () => 'rgb(100, 100, 100)');
-    var sleep_time = 50;
+    const canvas = document.getElementById('main_chart').getContext('2d');
+    const defaultColor = 'rgb(135,135,135)';
+    let currentArrayLength = 20;
+    let currentSleepTime = 50;
+    let numbersArray = generateRandomArray(currentArrayLength);
 
-    console.log(random_array);
-    var myChart = new Chart(ctx, {
+    let chart = new Chart(canvas, {
         type: 'bar',
         data: {
-            labels: random_array,
+            labels: numbersArray,
             datasets: [{
-                data: random_array,
-                backgroundColor: colors
+                data: numbersArray,
+                backgroundColor: Array.from({length: currentArrayLength}, () => defaultColor)
             }]
         },
         options: {
@@ -41,45 +44,49 @@
         }
     });
 
-    function updateSlider(slideAmount) {
-        var sliderDiv = document.getElementById("myRange");
-        sliderDiv.innerHTML = slideAmount;
-        sleep_time = 1000 - slideAmount
+    function updateTime(slideValue) {
+        currentSleepTime = slideValue;
+    }
+
+    function updateNumbersArray(slideValue) {
+        currentArrayLength = parseInt(slideValue);
+        numbersArray = generateRandomArray(currentArrayLength);
+        chart.update();
     }
 
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function mysort(array){
-        let default_color = colors[0];
+    async function mysort(array, colors){
         for (i = 0; i < array.length - 1; ++i){
             for (j = 0; j < array.length - i - 1; ++j){
                 colors[j] = 'rgb(255, 0, 0)'
-                myChart.update()
-                await sleep(sleep_time)
+                chart.update()
+                await sleep(currentSleepTime)
                 if (array[j] > array[j + 1]){
                     colors[j + 1] = 'rgb(255, 0, 0)'
-                    myChart.update()
-                    await sleep(sleep_time)
+                    chart.update()
+                    await sleep(currentSleepTime)
                     let temp = array[j + 1];
                     array[j + 1] = array[j]
                     array[j] = temp;
                 }
-                colors[j] = default_color
+                colors[j] = defaultColor
                 colors[j + 1] = 'rgb(255,0,255)'
-                myChart.update()
+                chart.update()
             }
         }
         return array
     }
 
     function clickHandler(){
-        random_array = mysort(random_array, colors)
-        myChart.update();
+        numbersArray = mysort(numbersArray, chart.data.datasets[0].data.backgroundColor)
+        chart.update();
     }
 
-    function iterationVisualisation(){
+    function generateRandomArray(arrayLength){
+        return Array.from({length: arrayLength}, () => Math.floor(Math.random() * 50) + 1);
     }
 </script>
 
