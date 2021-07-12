@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sorting</title>
+
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/chart.js/dist/chart.js"></script>
+</head>
+<body>
+<div class="slidecontainer">
+    <input type="range" min="10" max="1000" value="950" class="slider" id="myRange" onchange="updateSlider(this.value)">
+</div>
+<button onclick="clickHandler()">Click</button>
+<canvas id="chart"></canvas>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var random_array = Array.from({length: 10}, () => Math.floor(Math.random() * 40));
+    var colors = Array.from({length: 10}, () => 'rgb(100, 100, 100)');
+    var sleep_time = 50;
+
+    console.log(random_array);
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: random_array,
+            datasets: [{
+                data: random_array,
+                backgroundColor: colors
+            }]
+        },
+        options: {
+            animation: {
+                duration: 0
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    function updateSlider(slideAmount) {
+        var sliderDiv = document.getElementById("myRange");
+        sliderDiv.innerHTML = slideAmount;
+        sleep_time = 1000 - slideAmount
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function mysort(array){
+        let default_color = colors[0];
+        for (i = 0; i < array.length - 1; ++i){
+            for (j = 0; j < array.length - i - 1; ++j){
+                colors[j] = 'rgb(255, 0, 0)'
+                myChart.update()
+                await sleep(sleep_time)
+                if (array[j] > array[j + 1]){
+                    colors[j + 1] = 'rgb(255, 0, 0)'
+                    myChart.update()
+                    await sleep(sleep_time)
+                    let temp = array[j + 1];
+                    array[j + 1] = array[j]
+                    array[j] = temp;
+                }
+                colors[j] = default_color
+                colors[j + 1] = 'rgb(255,0,255)'
+                myChart.update()
+            }
+        }
+        return array
+    }
+
+    function clickHandler(){
+        random_array = mysort(random_array, colors)
+        myChart.update();
+    }
+
+    function iterationVisualisation(){
+    }
+</script>
+
+</body>
+</html>
