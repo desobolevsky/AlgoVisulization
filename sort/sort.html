@@ -13,7 +13,7 @@
 <body>
 <div class="slidecontainer">
     <label>Time Delta</label>
-    <input type="range" min="1" max="500" value="50" id="sleepTimeRange" autocomplete="off" onchange="updateTime(this.value)">
+    <input type="range" min="1" max="500" value="50" id="sleepTimeRange" autocomplete="off">
 </div>
 <div class="slidecontainer">
     <label>Numbers amount</label>
@@ -63,15 +63,6 @@
             animation: false,
         }
     });
-
-    function switchInterfaceState(isEnabled){
-        elementsNumberSlider.disabled = !isEnabled;
-        startButton.disabled = !isEnabled;
-    }
-
-    function generateRandomArray(arrayLength){
-        return Array.from({length: arrayLength}, () => Math.floor(Math.random() * 50) + 1);
-    }
 </script>
 
 </body>

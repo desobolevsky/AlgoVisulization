@@ -1,5 +1,4 @@
 async function bubbleSort(array, colors){
-    switchInterfaceState(false)
     for (i = 0; i < array.length - 1; ++i){
         for (j = 0; j < array.length - i - 1; ++j){
             colors[j] = iteratedColor;
@@ -20,6 +19,5 @@ async function bubbleSort(array, colors){
     }
     colors[0] = iteratedColor;
     chart.update();
-    switchInterfaceState(true)
     return array;
 }
