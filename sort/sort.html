@@ -26,11 +26,16 @@
     const elementsNumberSlider = document.getElementById('elementsNumberRange');
     const timeDeltaSlider = document.getElementById('sleepTimeRange');
     const startButton = document.getElementById('startButton');
+    const interfaceToDisable = [elementsNumberSlider, startButton]; // elements to disable on the time of visualisation process
     const defaultColor = 'rgb(135,135,135)';
     const iteratedColor = 'rgb(255, 0, 0)';
     let currentArrayLength = 20;
     let currentSleepTime = 50;
     let numbersArray = generateRandomArray(currentArrayLength);
+
+    timeDeltaSlider.addEventListener("click", function () {
+        currentSleepTime = this.value;
+    })
 
     elementsNumberSlider.addEventListener("click", function () {
         currentArrayLength = parseInt(this.value);
@@ -41,13 +46,10 @@
         chart.update();
     })
 
-    timeDeltaSlider.addEventListener("click", function () {
-        currentSleepTime = this.value;
-    })
-
-    startButton.addEventListener("click", function () {
-        numbersArray = bubbleSort(numbersArray, chart.data.datasets[0].backgroundColor);
-        chart.update()
+    startButton.addEventListener("click", async function () {
+        changeElementsDisabledState(interfaceToDisable, true);
+        numbersArray = await bubbleSort(numbersArray, chart.data.datasets[0].backgroundColor);
+        changeElementsDisabledState(interfaceToDisable, false);
     })
 
     let chart = new Chart(canvas, {
@@ -64,6 +66,5 @@
         }
     });
 </script>
-
 </body>
 </html>
