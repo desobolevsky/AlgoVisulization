@@ -10,20 +10,23 @@
 <body>
 <div class="slidecontainer">
     <label>Time Delta</label>
-    <input type="range" min="1" max="1000" value="50" id="sleepTimeRange" autocomplete="off" onchange="updateTime(this.value)">
+    <input type="range" min="1" max="500" value="50" id="sleepTimeRange" autocomplete="off" onchange="updateTime(this.value)">
 </div>
 <div class="slidecontainer">
     <label>Numbers amount</label>
     <input type="range" min="2" max="50" value="20" id="numberElementsRange" autocomplete="off" onchange="updateNumbersArray(this.value)">
 </div>
-<button onclick="clickHandler()">Sort</button>
+<button id="startButton" onclick="clickHandler()">Sort</button>
 <canvas id="main_chart"></canvas>
 <script>
     const canvas = document.getElementById('main_chart').getContext('2d');
+    const elementNumberSlider = document.getElementById('numberElementsRange')
+    const startButton = document.getElementById('startButton')
     const defaultColor = 'rgb(135,135,135)';
     const iteratedColor = 'rgb(255, 0, 0)'
     let currentArrayLength = 20;
     let currentSleepTime = 50;
+
     let numbersArray = generateRandomArray(currentArrayLength);
 
     let chart = new Chart(canvas, {
@@ -50,6 +53,7 @@
     }
 
     async function bubbleSort(array, colors){
+        switchInterfaceState(false)
         for (i = 0; i < array.length - 1; ++i){
             for (j = 0; j < array.length - i - 1; ++j){
                 colors[j] = iteratedColor;
@@ -70,6 +74,7 @@
         }
         colors[0] = iteratedColor;
         chart.update();
+        switchInterfaceState(true)
         return array;
     }
 
@@ -86,9 +91,14 @@
         chart.update();
     }
 
+    function switchInterfaceState(isEnabled){
+        elementNumberSlider.disabled = !isEnabled;
+        startButton.disabled = !isEnabled;
+    }
+
     function clickHandler(){
         numbersArray = bubbleSort(numbersArray, chart.data.datasets[0].backgroundColor);
-        chart.update();
+        chart.update()
     }
 
     function generateRandomArray(arrayLength){
