@@ -19,16 +19,26 @@
     <label>Numbers amount</label>
     <input type="range" min="2" max="50" value="20" id="elementsNumberRange" autocomplete="off">
 </div>
-<button id="startButton" onclick="clickHandler()">Sort</button>
+<div class="sortselectcontainer">
+    <label>Sorting method</label>
+    <select id="sortSelect">
+        <option value="bubbleSort">Bubble Sort</option>
+    </select>
+</div>
+<button id="startButton">Sort</button>
 <canvas id="main_chart"></canvas>
 <script>
     const canvas = document.getElementById('main_chart').getContext('2d');
     const elementsNumberSlider = document.getElementById('elementsNumberRange');
     const timeDeltaSlider = document.getElementById('sleepTimeRange');
+    const sortSelect = document.getElementById('sortSelect');
     const startButton = document.getElementById('startButton');
-    const interfaceToDisable = [elementsNumberSlider, startButton]; // elements to disable on the time of visualisation process
+    // elements to disable on the time of visualisation process
+    const interfaceToDisable = [elementsNumberSlider, startButton, sortSelect];
+    // TODO: move these constants to constants.js
     const defaultColor = 'rgb(135,135,135)';
     const iteratedColor = 'rgb(255, 0, 0)';
+    const SORTDICT = {'bubbleSort': bubbleSort}
     let currentArrayLength = 20;
     let currentSleepTime = 50;
     let numbersArray = generateRandomArray(currentArrayLength);
@@ -47,8 +57,9 @@
     })
 
     startButton.addEventListener("click", async function () {
+        const sortingFunction = SORTDICT[sortSelect.value]
         changeElementsDisabledState(interfaceToDisable, true);
-        numbersArray = await bubbleSort(numbersArray, chart.data.datasets[0].backgroundColor);
+        numbersArray = await sortingFunction(numbersArray, chart.data.datasets[0].backgroundColor);
         changeElementsDisabledState(interfaceToDisable, false);
     })
 
